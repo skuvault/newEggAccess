@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using NewEggAccess.Configuration;
+using NewEggAccess.Exceptions;
 using NewEggAccess.Models;
 using NewEggAccess.Models.Commands;
 using NewEggAccess.Models.Items;
@@ -24,9 +26,17 @@ namespace NewEggAccess.Services.Items
 		/// <param name="warehouseLocationCode"></param>
 		/// <param name="token"></param>
 		/// <returns></returns>
-		public async Task< ItemInventory > GetSkuInventory( string sku, string warehouseLocationCode, CancellationToken token )
+		public async Task< ItemInventory > GetSkuInventory( string sku, string warehouseLocationCode, CancellationToken token, Mark mark = null )
 		{
-			var mark = Mark.CreateNew();
+			if ( mark == null )
+			{
+				mark = Mark.CreateNew();
+			}
+
+			if ( string.IsNullOrWhiteSpace( warehouseLocationCode ) )
+			{
+				throw new NewEggException( "Warehouse location code is not specified!" );
+			}
 
 			var request = new GetItemInventoryRequest()
 			{
@@ -61,9 +71,17 @@ namespace NewEggAccess.Services.Items
 		/// <param name="quantity"></param>
 		/// <param name="token"></param>
 		/// <returns></returns>
-		public async Task< UpdateItemInventoryResponse > UpdateSkuQuantityAsync( string sku, string warehouseLocation, int quantity, CancellationToken token )
+		public async Task< UpdateItemInventoryResponse > UpdateSkuQuantityAsync( string sku, string warehouseLocation, int quantity, CancellationToken token, Mark mark = null )
 		{
-			var mark = Mark.CreateNew();
+			if ( mark == null )
+			{
+				mark = Mark.CreateNew();
+			}
+
+			if ( string.IsNullOrWhiteSpace( warehouseLocation ) )
+			{
+				throw new NewEggException( "Warehouse location code is not specified!" );
+			}
 
 			var request = new UpdateItemInventoryRequest()
 			{
@@ -90,6 +108,21 @@ namespace NewEggAccess.Services.Items
 			}
 			
 			return null;
+		}
+
+		/// <summary>
+		///	Updates skus quantities
+		/// </summary>
+		/// <param name="skusQuantities"></param>
+		/// <param name="token"></param>
+		/// <param name="mark"></param>
+		/// <returns></returns>
+		public async Task UpdateSkusQuantitiesAsync( Dictionary< string, int > skusQuantities, string warehouseLocationCode, CancellationToken token, Mark mark = null )
+		{
+			foreach( var skuQuantity in skusQuantities )
+			{
+				await this.UpdateSkuQuantityAsync( skuQuantity.Key, warehouseLocationCode, skuQuantity.Value, token, mark ).ConfigureAwait( false );
+			}
 		}
 	}
 }

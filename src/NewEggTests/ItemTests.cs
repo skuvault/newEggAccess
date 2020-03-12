@@ -15,6 +15,7 @@ namespace NewEggTests
 	{
 		private INewEggItemsService _itemsService;
 		private const string testSku1 = "testSku1";
+		private const string testSku2 = "testSku2";
 		private const string warehouseLocationCountryCode = "USA";
 
 		[ SetUp ]
@@ -59,6 +60,19 @@ namespace NewEggTests
 			var itemInventory = await this._itemsService.UpdateSkuQuantityAsync( sku, warehouseLocationCountryCode, quantity, CancellationToken.None );
 
 			itemInventory.Should().BeNull();
+		}
+
+		[ Test ]
+		public async Task UpdateItemsInventory()
+		{
+			var rand = new Random();
+			var inventory = new Dictionary< string, int >
+			{
+				{ testSku1, rand.Next( 1, 100 ) },
+				{ testSku2, rand.Next( 1, 100 ) }
+			};
+
+			await this._itemsService.UpdateSkusQuantitiesAsync( inventory, warehouseLocationCountryCode, CancellationToken.None );
 		}
 	}
 }
