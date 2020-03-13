@@ -27,7 +27,6 @@ namespace NewEggAccess.Throttling
 
 		private readonly int _maxQuota;
 		private readonly int _quotaRestoreTimeInSeconds;
-		private readonly int _maxRetryCount;
 		private volatile int _remainingQuota;
 		private readonly Timer _timer;
 		private bool _timerStarted = false;
@@ -43,10 +42,9 @@ namespace NewEggAccess.Throttling
 		/// <param name="maxQuota">Max requests per restore time interval</param>
 		/// <param name="quotaRestoreTimeInSeconds">Quota restore time in seconds</param>
 		/// <param name="maxRetryCount">Max Retry Count</param>
-		public Throttler( int maxQuota, int quotaRestoreTimeInSeconds, int maxRetryCount = 10 )
+		public Throttler( int maxQuota, int quotaRestoreTimeInSeconds )
 		{
 			this._maxQuota = this._remainingQuota = maxQuota;
-			this._maxRetryCount = maxRetryCount;
 			this._quotaRestoreTimeInSeconds = quotaRestoreTimeInSeconds;
 
 			_timer = new Timer( RestoreQuota, null, Timeout.Infinite, _quotaRestoreTimeInSeconds * 1000 );
@@ -63,23 +61,9 @@ namespace NewEggAccess.Throttling
 				}
 			}
 
-			var retryCount = 0;
-
 			while( true )
 			{
-				try
-				{
-					return await this.TryExecuteAsync( funcToThrottle ).ConfigureAwait( false );
-				}
-				catch( Exception )
-				{
-					if (retryCount >= this._maxRetryCount)
-						throw;
-
-					this._remainingQuota = 0;
-					await Task.Delay( _quotaRestoreTimeInSeconds * 1000 ).ConfigureAwait( false );
-					retryCount++;
-				}
+				return await this.TryExecuteAsync( funcToThrottle ).ConfigureAwait( false );
 			}
 		}
 

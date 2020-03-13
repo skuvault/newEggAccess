@@ -1,5 +1,7 @@
 ﻿using CuttingEdge.Conditions;
 using NewEggAccess.Configuration;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace NewEggAccess.Models.Commands
 {
@@ -12,11 +14,14 @@ namespace NewEggAccess.Models.Commands
 		public string Url
 		{
 			get 
-			{ 
-				return string.Format( "{0}{1}{2}?sellerId={3}", this.Config.ApiBaseUrl, this.GetPlatformUrl( this.Config.Platform ), this.RelativeUrl, this.Credentials.SellerId ); 
+			{
+				var urlParameters = string.Join( "&", this._urlParameters.Select( pair => string.Format( "{0}={1}", pair.Key, pair.Value ) ) );
+				return string.Format( "{0}{1}{2}?{4}", this.Config.ApiBaseUrl, this.GetPlatformUrl( this.Config.Platform ), this.RelativeUrl, this.Credentials.SellerId, urlParameters ); 
 			}
 		}
 		public string Payload { get; protected set; }
+
+		private Dictionary< string, string > _urlParameters { get; set; }
 
 		protected NewEggCommand( NewEggConfig config, NewEggCredentials credentials, string relativeUrl )
 		{
@@ -26,6 +31,10 @@ namespace NewEggAccess.Models.Commands
 			this.Config = config;
 			this.Credentials = credentials;
 			this.RelativeUrl = relativeUrl;
+			this._urlParameters = new Dictionary< string, string >
+			{
+				{ "sellerId", this.Credentials.SellerId }
+			};
 		}
 
 		private string GetPlatformUrl( NewEggPlatform platform )
@@ -43,6 +52,14 @@ namespace NewEggAccess.Models.Commands
 				default:
 					return string.Empty;
 			}
+		}
+
+		protected void AddUrlParameter( string name, string value )
+		{
+			Condition.Requires( name, "name" ).IsNotNullOrWhiteSpace();
+			Condition.Requires( value, "value" ).IsNotNullOrWhiteSpace();
+
+			this._urlParameters.Add( name, value );
 		}
 	}
 }
