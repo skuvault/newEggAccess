@@ -7,6 +7,10 @@ namespace NewEggAccess.Models.Commands
 {
 	public abstract class NewEggCommand
 	{
+		public const string ItemInventoryServiceUrl = "/contentmgmt/item/international/inventory";
+		public const string SubmitFeedServiceUrl = "/datafeedmgmt/feeds/submitfeed";
+		public const string GetFeedStatusServiceUrl = "/datafeedmgmt/feeds/status";
+
 		public NewEggConfig Config { get; private set; }
 		public NewEggCredentials Credentials { get; private set; }
 		public string RelativeUrl { get; private set; }
@@ -15,8 +19,8 @@ namespace NewEggAccess.Models.Commands
 		{
 			get 
 			{
-				var urlParameters = string.Join( "&", this._urlParameters.Select( pair => string.Format( "{0}={1}", pair.Key, pair.Value ) ) );
-				return string.Format( "{0}{1}{2}?{4}", this.Config.ApiBaseUrl, this.GetPlatformUrl( this.Config.Platform ), this.RelativeUrl, this.Credentials.SellerId, urlParameters ); 
+				var urlParameters = string.Join( "&", this._urlParameters.Select( pair => $"{ pair.Key }={ pair.Value }" ) );
+				return $"{ this.Config.ApiBaseUrl }{ this.GetPlatformUrl( this.Config.Platform ) }{ this.RelativeUrl }?{ urlParameters }"; 
 			}
 		}
 		public string Payload { get; protected set; }

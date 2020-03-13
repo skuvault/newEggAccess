@@ -5,7 +5,7 @@ namespace NewEggAccess.Models.Commands
 {
 	public class ItemInventoryCommand : NewEggCommand
 	{
-		public ItemInventoryCommand( NewEggConfig config, NewEggCredentials credentials, string payload ) : base( config, credentials, "/contentmgmt/item/international/inventory" )
+		public ItemInventoryCommand( NewEggConfig config, NewEggCredentials credentials, string payload ) : base( config, credentials, ItemInventoryServiceUrl )
 		{
 			Condition.Requires( payload, "payload" ).IsNotNullOrWhiteSpace();
 

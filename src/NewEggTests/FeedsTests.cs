@@ -36,6 +36,22 @@ namespace NewEggTests
 		}
 
 		[ Test ]
+		public async Task UpdateItemQuantitiesThereSomeItemsAreNotExist()
+		{
+			var rand = new Random();
+			var inventory = new List< InventoryUpdateFeedItem> 
+			{
+				new InventoryUpdateFeedItem( TestSku1, WarehouseLocationCountryCode, rand.Next( 1, 100 ) ),
+				new InventoryUpdateFeedItem( TestSku2, WarehouseLocationCountryCode, rand.Next( 1, 100 ) ),
+				new InventoryUpdateFeedItem( new Guid().ToString(), WarehouseLocationCountryCode, rand.Next( 1, 100 ) )
+			};
+
+			var feedId = await this._feedsService.UpdateItemsInventoryInBulkAsync( inventory, CancellationToken.None );
+
+			feedId.Should().NotBeNullOrWhiteSpace();
+		}
+
+		[ Test ]
 		public async Task GetFeedStatusAsync()
 		{
 			var feedId = "24ZVF18VYNJK1";

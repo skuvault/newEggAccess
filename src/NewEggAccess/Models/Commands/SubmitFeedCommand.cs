@@ -5,7 +5,7 @@ namespace NewEggAccess.Models.Commands
 {
 	public class SubmitFeedCommand : NewEggCommand
 	{
-		public SubmitFeedCommand( NewEggConfig config, NewEggCredentials credentials, SubmitFeedRequestTypeEnum requestType, string payload ) : base( config, credentials, "/datafeedmgmt/feeds/submitfeed" )
+		public SubmitFeedCommand( NewEggConfig config, NewEggCredentials credentials, SubmitFeedRequestTypeEnum requestType, string payload ) : base( config, credentials, SubmitFeedServiceUrl )
 		{
 			Condition.Requires( payload, "payload" ).IsNotNullOrWhiteSpace();
 

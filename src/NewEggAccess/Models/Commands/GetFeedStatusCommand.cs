@@ -5,7 +5,7 @@ namespace NewEggAccess.Models.Commands
 {
 	public class GetFeedStatusCommand : NewEggCommand
 	{
-		public GetFeedStatusCommand( NewEggConfig config, NewEggCredentials credentials, string payload ) : base( config, credentials, "/datafeedmgmt/feeds/status" )
+		public GetFeedStatusCommand( NewEggConfig config, NewEggCredentials credentials, string payload ) : base( config, credentials, GetFeedStatusServiceUrl )
 		{
 			Condition.Requires( payload, "payload" ).IsNotNullOrWhiteSpace();
 
