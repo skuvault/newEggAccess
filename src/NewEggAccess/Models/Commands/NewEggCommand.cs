@@ -10,6 +10,7 @@ namespace NewEggAccess.Models.Commands
 		public const string ItemInventoryServiceUrl = "/contentmgmt/item/international/inventory";
 		public const string SubmitFeedServiceUrl = "/datafeedmgmt/feeds/submitfeed";
 		public const string GetFeedStatusServiceUrl = "/datafeedmgmt/feeds/status";
+		public const string GetModifiedOrdersServiceUrl = "/ordermgmt/order/orderinfo";
 
 		public NewEggConfig Config { get; private set; }
 		public NewEggCredentials Credentials { get; private set; }

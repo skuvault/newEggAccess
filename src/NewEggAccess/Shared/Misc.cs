@@ -40,5 +40,16 @@ namespace NewEggAccess.Shared
 			}
 			return chunks;
 		}
+
+		public static string ConvertFromUtcToPstStr( DateTime date )
+		{
+			return TimeZoneInfo.ConvertTimeBySystemTimeZoneId( date, "Pacific Standard Time" ).ToString( "yyyy-MM-dd hh:mm:ss" );
+		}
+
+		public static DateTime ConvertFromPstToUtc( DateTime date )
+		{
+			var pstTimeZone = TimeZoneInfo.FindSystemTimeZoneById( "Pacific Standard Time" );
+			return date.Add( pstTimeZone.BaseUtcOffset );
+		}
 	}
 }
