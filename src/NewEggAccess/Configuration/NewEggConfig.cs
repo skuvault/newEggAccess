@@ -30,24 +30,21 @@ namespace NewEggAccess.Configuration
 	{
 		public int MaxRequestsPerTimeInterval { get; private set; }
 		public int TimeIntervalInSec { get; private set; }
-		public int MaxRetryAttempts { get; private set; }
 
-		public ThrottlingOptions( int maxRequests, int timeIntervalInSec, int maxRetryAttempts )
+		public ThrottlingOptions( int maxRequests, int timeIntervalInSec )
 		{
 			Condition.Requires( maxRequests, "maxRequests" ).IsGreaterOrEqual( 1 );
 			Condition.Requires( timeIntervalInSec, "timeIntervalInSec" ).IsGreaterOrEqual( 1 );
-			Condition.Requires( maxRetryAttempts, "maxRetryAttempts" ).IsGreaterOrEqual( 0 );
 
 			this.MaxRequestsPerTimeInterval = maxRequests;
 			this.TimeIntervalInSec = timeIntervalInSec;
-			this.MaxRetryAttempts = maxRetryAttempts;
 		}
 
 		public static ThrottlingOptions NewEggDefaultOptions
 		{
 			get
 			{
-				return new ThrottlingOptions( 10000, 86400, 10 );
+				return new ThrottlingOptions( 10000, 86400 );
 			}
 		}
 	}

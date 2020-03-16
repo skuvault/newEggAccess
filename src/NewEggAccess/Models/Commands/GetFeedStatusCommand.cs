@@ -3,9 +3,9 @@ using NewEggAccess.Configuration;
 
 namespace NewEggAccess.Models.Commands
 {
-	public class ItemInventoryCommand : NewEggCommand
+	public class GetFeedStatusCommand : NewEggCommand
 	{
-		public ItemInventoryCommand( NewEggConfig config, NewEggCredentials credentials, string payload ) : base( config, credentials, ItemInventoryServiceUrl )
+		public GetFeedStatusCommand( NewEggConfig config, NewEggCredentials credentials, string payload ) : base( config, credentials, GetFeedStatusServiceUrl )
 		{
 			Condition.Requires( payload, "payload" ).IsNotNullOrWhiteSpace();
 

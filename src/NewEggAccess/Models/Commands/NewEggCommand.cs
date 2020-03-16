@@ -1,10 +1,16 @@
 ﻿using CuttingEdge.Conditions;
 using NewEggAccess.Configuration;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace NewEggAccess.Models.Commands
 {
 	public abstract class NewEggCommand
 	{
+		public const string ItemInventoryServiceUrl = "/contentmgmt/item/international/inventory";
+		public const string SubmitFeedServiceUrl = "/datafeedmgmt/feeds/submitfeed";
+		public const string GetFeedStatusServiceUrl = "/datafeedmgmt/feeds/status";
+
 		public NewEggConfig Config { get; private set; }
 		public NewEggCredentials Credentials { get; private set; }
 		public string RelativeUrl { get; private set; }
@@ -12,11 +18,14 @@ namespace NewEggAccess.Models.Commands
 		public string Url
 		{
 			get 
-			{ 
-				return string.Format( "{0}{1}{2}?sellerId={3}", this.Config.ApiBaseUrl, this.GetPlatformUrl( this.Config.Platform ), this.RelativeUrl, this.Credentials.SellerId ); 
+			{
+				var urlParameters = string.Join( "&", this._urlParameters.Select( pair => $"{ pair.Key }={ pair.Value }" ) );
+				return $"{ this.Config.ApiBaseUrl }{ this.GetPlatformUrl( this.Config.Platform ) }{ this.RelativeUrl }?{ urlParameters }"; 
 			}
 		}
 		public string Payload { get; protected set; }
+
+		private Dictionary< string, string > _urlParameters { get; set; }
 
 		protected NewEggCommand( NewEggConfig config, NewEggCredentials credentials, string relativeUrl )
 		{
@@ -26,6 +35,10 @@ namespace NewEggAccess.Models.Commands
 			this.Config = config;
 			this.Credentials = credentials;
 			this.RelativeUrl = relativeUrl;
+			this._urlParameters = new Dictionary< string, string >
+			{
+				{ "sellerId", this.Credentials.SellerId }
+			};
 		}
 
 		private string GetPlatformUrl( NewEggPlatform platform )
@@ -43,6 +56,14 @@ namespace NewEggAccess.Models.Commands
 				default:
 					return string.Empty;
 			}
+		}
+
+		protected void AddUrlParameter( string name, string value )
+		{
+			Condition.Requires( name, "name" ).IsNotNullOrWhiteSpace();
+			Condition.Requires( value, "value" ).IsNotNullOrWhiteSpace();
+
+			this._urlParameters.Add( name, value );
 		}
 	}
 }

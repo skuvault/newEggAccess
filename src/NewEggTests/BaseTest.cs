@@ -16,6 +16,10 @@ namespace NewEggTests
 		protected NewEggConfig Config { get; private set; }
 		protected NewEggCredentials Credentials { get; private set; }
 
+		protected const string TestSku1 = "testSku1";
+		protected const string TestSku2 = "testSku2";
+		protected const string WarehouseLocationCountryCode = "USA";
+
 		public BaseTest()
 		{
 			var testCredentials = this.LoadTestSettings< TestCredentials >( @"\..\..\credentials.csv" );
