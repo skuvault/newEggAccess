@@ -46,17 +46,17 @@ namespace NewEggAccess.Services
 
 		public async Task< IHttpResponseMessage > GetAsync( string url )
 		{
-			return new DefaultHttpResponseMessage( await this.HttpClient.GetAsync( url ) );
+			return new DefaultHttpResponseMessage( await this.HttpClient.GetAsync( url ).ConfigureAwait( false ) );
 		}
 
 		public async Task< IHttpResponseMessage > PostAsync( string url, HttpContent content, CancellationToken token )
 		{
-			return new DefaultHttpResponseMessage( await this.HttpClient.PostAsync( url, content, token ) );
+			return new DefaultHttpResponseMessage( await this.HttpClient.PostAsync( url, content, token ).ConfigureAwait( false ) );
 		}
 
 		public async Task< IHttpResponseMessage > PutAsync( string url, HttpContent content, CancellationToken token )
 		{
-			return new DefaultHttpResponseMessage( await this.HttpClient.PutAsync( url, content, token ) );
+			return new DefaultHttpResponseMessage( await this.HttpClient.PutAsync( url, content, token ).ConfigureAwait( false ) );
 		}
 	}
 
