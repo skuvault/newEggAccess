@@ -12,7 +12,7 @@ namespace NewEggAccess.Configuration
 		public NewEggPlatform Platform { get; private set; }
 		public string WarehouseLocationCountryCode { get; private set; }
 
-		public int OrdersPageSize { get; private set; }
+		public int OrdersPageSize { get; set; }
 
 		public NewEggConfig( NewEggPlatform platform, ThrottlingOptions throttlingOptions, NetworkOptions networkOptions )
 		{
