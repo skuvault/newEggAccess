@@ -53,7 +53,7 @@ namespace NewEggAccess.Services.Orders
 					{
 						if ( ordersPage.ResponseBody.OrderInfoList != null )
 						{
-							orders.AddRange( ordersPage.ResponseBody.OrderInfoList.Select( o => o.ToSVOrder() ) );
+							orders.AddRange( ordersPage.ResponseBody.OrderInfoList.OrderInfo.Select( o => o.ToSVOrder() ) );
 							++pageIndex;
 						}
 

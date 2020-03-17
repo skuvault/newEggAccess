@@ -32,32 +32,36 @@ namespace NewEggTests
 				SalesTax = 20.0M,
 				OrderTotalAmount = 120.0M,
 				DiscountAmount = 10.0M,
-				ItemInfoList = new OrderItem[]
-				{
-					new OrderItem()
+				ItemInfoList = new ItemInfoList() { 
+					ItemInfo = new OrderItem[]
 					{
-						SellerPartNumber = "testSku1",
-						OrderedQty = 7,
-						UnitPrice = 2.0M,
-						ExtendShippingCharge = 1.3M,
-						ExtendSalesTax = 0.5M,
-						ExtendVAT = 0.15M
-					},
-					new OrderItem()
-					{
-						SellerPartNumber = "testSku2",
-						OrderedQty = 2,
-						UnitPrice = 1.0M,
-						ExtendShippingCharge = 0.3M,
-						ExtendSalesTax = 0.1M,
-						ExtendVAT = 0.15M
-					},
-				},
-				PackageInfoList = new PackageInfo[] { 
-					new PackageInfo()
-					{
-						ShipCarrier = "UPS"
+						new OrderItem()
+						{
+							SellerPartNumber = "testSku1",
+							OrderedQty = 7,
+							UnitPrice = 2.0M,
+							ExtendShippingCharge = 1.3M,
+							ExtendSalesTax = 0.5M,
+							ExtendVAT = 0.15M
+						},
+						new OrderItem()
+						{
+							SellerPartNumber = "testSku2",
+							OrderedQty = 2,
+							UnitPrice = 1.0M,
+							ExtendShippingCharge = 0.3M,
+							ExtendSalesTax = 0.1M,
+							ExtendVAT = 0.15M
+						},
 					} 
+				},
+				PackageInfoList = new PackageInfoList() { 
+					PackageInfo = new PackageInfo[] { 
+						new PackageInfo()
+						{
+							ShipCarrier = "UPS"
+						}
+					}
 				}
 			};
 
@@ -72,7 +76,7 @@ namespace NewEggTests
 			svOrder.DiscountAmount.Should().Be( order.DiscountAmount );
 
 			svOrder.ShippingInfo.Should().NotBeNull();
-			svOrder.ShippingInfo.Carrier.Should().Be( order.PackageInfoList.First().ShipCarrier );
+			svOrder.ShippingInfo.Carrier.Should().Be( order.PackageInfoList.PackageInfo.First().ShipCarrier );
 			svOrder.ShippingInfo.ShippingCharge.Should().Be( order.ShippingAmount );
 			
 			svOrder.ShippingInfo.Address.Should().NotBeNull();
@@ -89,12 +93,12 @@ namespace NewEggTests
 			svOrder.ShippingInfo.ContactInfo.EmailAddress.Should().Be( order.CustomerEmailAddress );
 
 			svOrder.Items.Count().Should().Be( 2 );
-			svOrder.Items.First().Sku.Should().Be( order.ItemInfoList.First().SellerPartNumber );
-			svOrder.Items.First().Quantity.Should().Be( order.ItemInfoList.First().OrderedQty );
-			svOrder.Items.First().UnitPrice.Should().Be( order.ItemInfoList.First().UnitPrice );
-			svOrder.Items.First().SalesTax.Should().Be( order.ItemInfoList.First().ExtendSalesTax );
-			svOrder.Items.First().Vat.Should().Be( order.ItemInfoList.First().ExtendVAT );
-			svOrder.Items.First().ShippingCharge.Should().Be( order.ItemInfoList.First().ExtendShippingCharge );
+			svOrder.Items.First().Sku.Should().Be( order.ItemInfoList.ItemInfo.First().SellerPartNumber );
+			svOrder.Items.First().Quantity.Should().Be( order.ItemInfoList.ItemInfo.First().OrderedQty );
+			svOrder.Items.First().UnitPrice.Should().Be( order.ItemInfoList.ItemInfo.First().UnitPrice );
+			svOrder.Items.First().SalesTax.Should().Be( order.ItemInfoList.ItemInfo.First().ExtendSalesTax );
+			svOrder.Items.First().Vat.Should().Be( order.ItemInfoList.ItemInfo.First().ExtendVAT );
+			svOrder.Items.First().ShippingCharge.Should().Be( order.ItemInfoList.ItemInfo.First().ExtendShippingCharge );
 		}
 	}
 }

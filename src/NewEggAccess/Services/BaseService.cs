@@ -24,7 +24,7 @@ namespace NewEggAccess.Services
 		protected NewEggCredentials Credentials { get; private set; }
 		protected NewEggConfig Config { get; private set; }
 		protected readonly Throttler Throttler;
-		protected readonly HttpClient HttpClient;
+		public IHttpClient HttpClient;
 
 		private Func< string > _additionalLogInfo;
 		private const int _tooManyRequestsHttpCode = 429;
@@ -47,16 +47,16 @@ namespace NewEggAccess.Services
 			this.Config = config;
 
 			this.Throttler = new Throttler( config.ThrottlingOptions.MaxRequestsPerTimeInterval, config.ThrottlingOptions.TimeIntervalInSec );
-			this.HttpClient = new HttpClient();
-			this.HttpClient.DefaultRequestHeaders.Accept.Add( new MediaTypeWithQualityHeaderValue( "application/json" ) );
+			this.HttpClient = new DefaultHttpClient();
+			this.HttpClient.SetAcceptHeader( new MediaTypeWithQualityHeaderValue( "application/json" ) );
 
 			SetAuthorizationHeaders();
 		}
 
 		private void SetAuthorizationHeaders()
 		{
-			this.HttpClient.DefaultRequestHeaders.Add( "Authorization", this.Credentials.ApiKey );
-			this.HttpClient.DefaultRequestHeaders.Add( "SecretKey", this.Credentials.SecretKey );
+			this.HttpClient.SetRequestHeader( "Authorization", this.Credentials.ApiKey );
+			this.HttpClient.SetRequestHeader( "SecretKey", this.Credentials.SecretKey );
 		}
 
 		protected Task< ServerResponse > GetAsync( string url, CancellationToken cancellationToken, Mark mark, Func< HttpStatusCode, ErrorResponse, bool > ignoreError )
@@ -70,7 +70,7 @@ namespace NewEggAccess.Services
 			return this.ThrottleRequest( url, string.Empty, mark, async ( token ) =>
 			{
 				var httpResponse = await HttpClient.GetAsync( url ).ConfigureAwait( false );
-				var content = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait( false );
+				var content = await httpResponse.ReadContentAsStringAsync().ConfigureAwait( false );
 
 				var errorResponse = ThrowIfError( httpResponse, content, ignoreError );
 
@@ -92,7 +92,7 @@ namespace NewEggAccess.Services
 				// NewEgg service responds only on application/json without charset specified
 				payload.Headers.ContentType = MediaTypeHeaderValue.Parse( "application/json" );
 				var httpResponse = await HttpClient.PutAsync( command.Url, payload, token ).ConfigureAwait( false );
-				var content = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait( false );
+				var content = await httpResponse.ReadContentAsStringAsync().ConfigureAwait( false );
 
 				var errorResponse = ThrowIfError( httpResponse, content, ignoreError );
 
@@ -115,7 +115,7 @@ namespace NewEggAccess.Services
 				// NewEgg service responds only on application/json without charset specified
 				payload.Headers.ContentType = MediaTypeHeaderValue.Parse( "application/json" );
 				var httpResponse = await HttpClient.PostAsync( command.Url, payload, token ).ConfigureAwait( false );
-				var content = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait( false );
+				var content = await httpResponse.ReadContentAsStringAsync().ConfigureAwait( false );
 
 				var errorResponse = ThrowIfError( httpResponse, content, ignoreError );
 
@@ -123,7 +123,7 @@ namespace NewEggAccess.Services
 			}, cancellationToken );
 		}
 
-		protected ErrorResponse ThrowIfError( HttpResponseMessage response, string message, Func< HttpStatusCode, ErrorResponse, bool > ignoreError )
+		protected ErrorResponse ThrowIfError( IHttpResponseMessage response, string message, Func< HttpStatusCode, ErrorResponse, bool > ignoreError )
 		{
 			ErrorResponse errorResponse = null;
 			HttpStatusCode responseStatusCode = response.StatusCode;

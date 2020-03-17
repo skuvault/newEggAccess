@@ -82,13 +82,18 @@ namespace NewEggAccess.Models.Orders
 		public decimal OrderItemAmount { get; set; }
 		public decimal ShippingAmount { get; set; }
 		public decimal DiscountAmount { get; set; }
-		public decimal SalesTax { get; set; }
-		public decimal VATTotal { get; set; }
-		public decimal DutyTotal { get; set; }
+		public decimal? SalesTax { get; set; }
+		public decimal? VATTotal { get; set; }
+		public decimal? DutyTotal { get; set; }
 		public decimal OrderTotalAmount { get; set; }
 		public int OrderQty { get; set; }
-		public OrderItem[] ItemInfoList { get; set; }
-		public PackageInfo[] PackageInfoList { get; set; }
+		public ItemInfoList ItemInfoList { get; set; }
+		public PackageInfoList PackageInfoList { get; set; }
+	}
+
+	public class ItemInfoList
+	{
+		public OrderItem[] ItemInfo { get; set; } 
 	}
 
 	public class OrderItem
@@ -100,12 +105,17 @@ namespace NewEggAccess.Models.Orders
 		public int OrderedQty { get; set; }
 		public int ShippedQty { get; set; }
 		public decimal UnitPrice { get; set; }
-		public decimal ExtendUnitPrice { get; set; }
-		public decimal ExtendShippingCharge { get; set; }
-		public decimal ExtendSalesTax { get; set; }
-		public decimal ExtendVAT { get; set; }
-		public decimal ExtendDuty { get; set; }
+		public decimal? ExtendUnitPrice { get; set; }
+		public decimal? ExtendShippingCharge { get; set; }
+		public decimal? ExtendSalesTax { get; set; }
+		public decimal? ExtendVAT { get; set; }
+		public decimal? ExtendDuty { get; set; }
 		public string StatusDescription { get; set; }
+	}
+
+	public class PackageInfoList
+	{
+		public PackageInfo[] PackageInfo { get; set; }
 	}
 
 	public class PackageInfo
@@ -145,25 +155,25 @@ namespace NewEggAccess.Models.Orders
 						PhoneNumber = order.CustomerPhoneNumber,
 						EmailAddress = order.CustomerEmailAddress
 					},
-					Carrier = order.PackageInfoList?.FirstOrDefault()?.ShipCarrier,
+					Carrier = order.PackageInfoList?.PackageInfo?.FirstOrDefault()?.ShipCarrier,
 					ShippingCharge = order.ShippingAmount,
 				},
 				Total = order.OrderTotalAmount,
 				DiscountAmount = order.DiscountAmount,
-				SalesTax = order.SalesTax
+				SalesTax = order.SalesTax ?? 0
 			};
 
 			var items = new List< NewEggOrderItem >();
-			foreach( var orderItem in order.ItemInfoList )
+			foreach( var orderItem in order.ItemInfoList.ItemInfo )
 			{
 				items.Add( new NewEggOrderItem()
 				{
 					Sku = orderItem.SellerPartNumber,
 					Quantity = orderItem.OrderedQty,
 					UnitPrice = orderItem.UnitPrice,
-					ShippingCharge = orderItem.ExtendShippingCharge,
-					SalesTax = orderItem.ExtendSalesTax,
-					Vat = orderItem.ExtendVAT
+					ShippingCharge = orderItem.ExtendShippingCharge ?? 0,
+					SalesTax = orderItem.ExtendSalesTax ?? 0,
+					Vat = orderItem.ExtendVAT ?? 0
 				} );
 			}
 			svOrder.Items = items.ToArray();

@@ -17,7 +17,12 @@ namespace NewEggAccess.Models.Orders
 	public class GetOrderInfoResponseBody
 	{
 		public PageInfo PageInfo { get; set; }
-		public Order[] OrderInfoList { get; set; }
+		public OrderInfoList OrderInfoList { get; set; }
+	}
+
+	public class OrderInfoList
+	{
+		public Order[] OrderInfo { get; set; }
 	}
 
 	public class PageInfo
