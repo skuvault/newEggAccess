@@ -12,6 +12,8 @@ namespace NewEggAccess.Configuration
 		public NewEggPlatform Platform { get; private set; }
 		public string WarehouseLocationCountryCode { get; private set; }
 
+		public int OrdersPageSize { get; set; }
+
 		public NewEggConfig( NewEggPlatform platform, ThrottlingOptions throttlingOptions, NetworkOptions networkOptions )
 		{
 			Condition.Requires( throttlingOptions, "throttlingOptions" ).IsNotNull();
@@ -20,6 +22,7 @@ namespace NewEggAccess.Configuration
 			this.Platform = platform;
 			this.ThrottlingOptions = throttlingOptions;
 			this.NetworkOptions = networkOptions;
+			this.OrdersPageSize = 100;
 		}
 
 		public NewEggConfig( NewEggPlatform platform ) : this( platform, ThrottlingOptions.NewEggDefaultOptions, NetworkOptions.NewEggDefaultOptions )

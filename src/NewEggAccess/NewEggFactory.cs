@@ -2,6 +2,7 @@
 using NewEggAccess.Configuration;
 using NewEggAccess.Services.Feeds;
 using NewEggAccess.Services.Items;
+using NewEggAccess.Services.Orders;
 
 namespace NewEggAccess
 {
@@ -28,6 +29,13 @@ namespace NewEggAccess
 			var credentials = new NewEggCredentials( sellerId, this._developerApiKey, secretKey );
 
 			return new NewEggItemsService( config, credentials );
+		}
+
+		public INewEggOrdersService CreateOrdersService( NewEggConfig config, string sellerId, string secretKey )
+		{
+			var credentials = new NewEggCredentials( sellerId, this._developerApiKey, secretKey );
+
+			return new NewEggOrdersService( config, credentials );
 		}
 	}
 }
