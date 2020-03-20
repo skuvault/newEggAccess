@@ -41,7 +41,6 @@ namespace NewEggAccess.Throttling
 		/// </code>
 		/// <param name="maxQuota">Max requests per restore time interval</param>
 		/// <param name="quotaRestoreTimeInSeconds">Quota restore time in seconds</param>
-		/// <param name="maxRetryCount">Max Retry Count</param>
 		public Throttler( int maxQuota, int quotaRestoreTimeInSeconds )
 		{
 			this._maxQuota = this._remainingQuota = maxQuota;

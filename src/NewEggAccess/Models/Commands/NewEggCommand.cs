@@ -12,6 +12,8 @@ namespace NewEggAccess.Models.Commands
 		public const string GetFeedStatusServiceUrl = "/datafeedmgmt/feeds/status";
 		public const string GetModifiedOrdersServiceUrl = "/ordermgmt/order/orderinfo";
 
+		public const string ApiVersion = "307";
+
 		public NewEggConfig Config { get; private set; }
 		public NewEggCredentials Credentials { get; private set; }
 		public string RelativeUrl { get; private set; }
