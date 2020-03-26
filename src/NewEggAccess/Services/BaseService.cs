@@ -8,6 +8,7 @@ using NewEggAccess.Throttling;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -23,7 +24,7 @@ namespace NewEggAccess.Services
 	{
 		protected NewEggCredentials Credentials { get; private set; }
 		protected NewEggConfig Config { get; private set; }
-		protected readonly Throttler Throttler;
+		private Throttler _throttler;
 		public IHttpClient HttpClient;
 
 		private Func< string > _additionalLogInfo;
@@ -38,6 +39,14 @@ namespace NewEggAccess.Services
 			set => _additionalLogInfo = value;
 		}
 
+		public Throttler Throttler
+		{
+			get
+			{
+				return _throttler;
+			}
+		}
+
 		public BaseService( NewEggCredentials credentials, NewEggConfig config )
 		{
 			Condition.Requires( credentials, "credentials" ).IsNotNull();
@@ -46,7 +55,7 @@ namespace NewEggAccess.Services
 			this.Credentials = credentials;
 			this.Config = config;
 
-			this.Throttler = new Throttler( config.ThrottlingOptions.MaxRequestsPerTimeInterval, config.ThrottlingOptions.TimeIntervalInSec );
+			this._throttler = new Throttler( config.ThrottlingOptions.MaxRequestsPerTimeInterval, config.ThrottlingOptions.TimeIntervalInSec );
 			this.HttpClient = new DefaultHttpClient();
 			this.HttpClient.SetAcceptHeader( new MediaTypeWithQualityHeaderValue( "application/json" ) );
 
@@ -72,6 +81,7 @@ namespace NewEggAccess.Services
 				var httpResponse = await HttpClient.GetAsync( url ).ConfigureAwait( false );
 				var content = await httpResponse.ReadContentAsStringAsync().ConfigureAwait( false );
 
+				this.SaveAndLogRateLimits( httpResponse, CreateMethodCallInfo( url, mark, additionalInfo: this.AdditionalLogInfo() ) );
 				var errorResponse = ThrowIfError( httpResponse, content, ignoreError );
 
 				return new ServerResponse() { Result = content, Error = errorResponse };
@@ -94,6 +104,7 @@ namespace NewEggAccess.Services
 				var httpResponse = await HttpClient.PutAsync( command.Url, payload, token ).ConfigureAwait( false );
 				var content = await httpResponse.ReadContentAsStringAsync().ConfigureAwait( false );
 
+				this.SaveAndLogRateLimits( httpResponse, CreateMethodCallInfo( command.Url, mark, additionalInfo: this.AdditionalLogInfo() ) );
 				var errorResponse = ThrowIfError( httpResponse, content, ignoreError );
 
 				return new ServerResponse() { Result = content, Error = errorResponse };
@@ -117,6 +128,7 @@ namespace NewEggAccess.Services
 				var httpResponse = await HttpClient.PostAsync( command.Url, payload, token ).ConfigureAwait( false );
 				var content = await httpResponse.ReadContentAsStringAsync().ConfigureAwait( false );
 
+				this.SaveAndLogRateLimits( httpResponse, CreateMethodCallInfo( command.Url, mark, additionalInfo: this.AdditionalLogInfo() ) );
 				var errorResponse = ThrowIfError( httpResponse, content, ignoreError );
 
 				return new ServerResponse() { Result = content, Error = errorResponse };
@@ -162,6 +174,41 @@ namespace NewEggAccess.Services
 			}
 
 			throw new NewEggNetworkException( message );
+		}
+
+		private void SaveAndLogRateLimits( IHttpResponseMessage response, string info )
+		{
+			var limits = GetRateLimit( response );
+
+			if ( limits != null )
+			{
+				this._throttler.RateLimit.Limit = limits.Limit;
+				this._throttler.RateLimit.Remaining = limits.Remaining;
+				this._throttler.RateLimit.ResetTime = limits.ResetTime;
+
+				NewEggLogger.LogTrace( String.Format( "{0}, Total calls: {1}, Remaining calls: {2}, Reset time: {3}", info, limits.Limit, limits.Remaining, limits.ResetTime ) );
+			}
+		}
+
+		private NewEggRateLimit GetRateLimit( IHttpResponseMessage response )
+		{
+			var rateLimit = response.GetHeaderValue( "X-RateLimit-Limit" );
+			var rateRemaining = response.GetHeaderValue( "X-RateLimit-Remaining" );
+			var rateResetTime = response.GetHeaderValue( "X-ratelimit-resettime" );
+
+			if ( !string.IsNullOrWhiteSpace( rateLimit )
+				&& !string.IsNullOrWhiteSpace( rateRemaining )
+				&& !string.IsNullOrWhiteSpace( rateResetTime ) )
+			{
+				return new NewEggRateLimit()
+				{
+					Limit = int.Parse( rateLimit ),
+					Remaining = int.Parse( rateRemaining ),
+					ResetTime = DateTime.ParseExact( rateResetTime, "M/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture )
+				};
+			}
+
+			return null;
 		}
 
 		protected Task< T > ThrottleRequest< T >( string url, string payload, Mark mark, Func< CancellationToken, Task< T > > processor, CancellationToken token )
