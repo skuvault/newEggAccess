@@ -17,13 +17,9 @@ namespace NewEggAccess.Throttling
 		}
 
 		/// <summary>
-		///	API limits (total per day)
+		///	API requests limits per defined time window
 		/// </summary>
-		public int DayLimit { get; set; }
-		/// <summary>
-		///	API requests remaining
-		/// </summary>
-		public int DayLimitRemaining { get; set; }
+		public NewEggRateLimit RateLimit { get; private set; }
 
 		private readonly int _maxQuota;
 		private readonly int _quotaRestoreTimeInSeconds;
@@ -45,6 +41,7 @@ namespace NewEggAccess.Throttling
 		{
 			this._maxQuota = this._remainingQuota = maxQuota;
 			this._quotaRestoreTimeInSeconds = quotaRestoreTimeInSeconds;
+			this.RateLimit = new NewEggRateLimit();
 
 			_timer = new Timer( RestoreQuota, null, Timeout.Infinite, _quotaRestoreTimeInSeconds * 1000 );
 		}

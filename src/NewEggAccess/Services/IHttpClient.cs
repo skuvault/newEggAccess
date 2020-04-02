@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -23,6 +24,7 @@ namespace NewEggAccess.Services
 		Task< string > ReadContentAsStringAsync();
 		bool IsSuccessStatusCode { get; set; }
 		HttpStatusCode StatusCode { get; set; }
+		string GetHeaderValue( string name );
 	}
 
 	public class DefaultHttpClient : IHttpClient
@@ -85,6 +87,18 @@ namespace NewEggAccess.Services
 				return this._responseMessage.IsSuccessStatusCode;
 			}
 			set { }
+		}
+
+		public string GetHeaderValue( string name )
+		{
+			this._responseMessage.Headers.TryGetValues( name, out IEnumerable< string > value );
+
+			if ( value != null && value.Any() )
+			{
+				return value.First();
+			}
+
+			return null;
 		}
 
 		public Task< string > ReadContentAsStringAsync()
