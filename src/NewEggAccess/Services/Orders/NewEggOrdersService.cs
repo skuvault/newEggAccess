@@ -21,6 +21,19 @@ namespace NewEggAccess.Services.Orders
 		public async Task< IEnumerable< NewEggOrder > > GetModifiedOrdersAsync( DateTime startDateUtc, DateTime endDateUtc, string countryCode, CancellationToken token, Mark mark = null )
 		{
 			var orders = new List< NewEggOrder >();
+			// order status actually cannot be omitted in request body (API error)
+			orders.AddRange( await this.GetModifiedOrdersByStatusAsync( startDateUtc, endDateUtc, countryCode, NewEggOrderStatusEnum.Unshipped, token, mark ).ConfigureAwait( false ) );
+			orders.AddRange( await this.GetModifiedOrdersByStatusAsync( startDateUtc, endDateUtc, countryCode, NewEggOrderStatusEnum.PartiallyShipped, token, mark ).ConfigureAwait( false ) );
+			orders.AddRange( await this.GetModifiedOrdersByStatusAsync( startDateUtc, endDateUtc, countryCode, NewEggOrderStatusEnum.Shipped, token, mark ).ConfigureAwait( false ) );
+			orders.AddRange( await this.GetModifiedOrdersByStatusAsync( startDateUtc, endDateUtc, countryCode, NewEggOrderStatusEnum.Invoiced, token, mark ).ConfigureAwait( false ) );
+			orders.AddRange( await this.GetModifiedOrdersByStatusAsync( startDateUtc, endDateUtc, countryCode, NewEggOrderStatusEnum.Voided, token, mark ).ConfigureAwait( false ) );
+
+			return orders;
+		}
+
+		private async Task< IEnumerable< NewEggOrder > > GetModifiedOrdersByStatusAsync( DateTime startDateUtc, DateTime endDateUtc, string countryCode, NewEggOrderStatusEnum orderStatus, CancellationToken token, Mark mark = null )
+		{
+			var orders = new List< NewEggOrder >();
 
 			if ( mark == null )
 			{
@@ -38,9 +51,11 @@ namespace NewEggAccess.Services.Orders
 						new GetOrderInfoRequestCriteria()
 						{
 							Type = 0,
+							Status = (int)orderStatus,
 							OrderDateFrom = Misc.ConvertFromUtcToPstStr( startDateUtc ),
 							OrderDateTo = Misc.ConvertFromUtcToPstStr( endDateUtc ),
-							CountryCode = countryCode
+							CountryCode = countryCode,
+							
 						} ) );
 
 				var ordersPageServerResponse = await base.PutAsync( new GetModifiedOrdersCommand( base.Config, base.Credentials, request.ToJson() ), token, mark, ( code, response ) => false ).ConfigureAwait( false );
@@ -53,7 +68,7 @@ namespace NewEggAccess.Services.Orders
 					{
 						if ( ordersPage.ResponseBody.OrderInfoList != null )
 						{
-							orders.AddRange( ordersPage.ResponseBody.OrderInfoList.OrderInfo.Select( o => o.ToSVOrder() ) );
+							orders.AddRange( ordersPage.ResponseBody.OrderInfoList.Select( o => o.ToSVOrder() ) );
 							++pageIndex;
 						}
 

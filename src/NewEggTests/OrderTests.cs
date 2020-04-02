@@ -23,10 +23,18 @@ namespace NewEggTests
 		}
 
 		[ Test ]
-		[ Ignore( "Test orders are not available in the sandbox" ) ]
 		public async Task GetModifiedOrders()
 		{
-			var orders = await this._orderService.GetModifiedOrdersAsync( DateTime.Now.AddDays( -1 ), DateTime.Now, WarehouseLocationCountryCode, CancellationToken.None );
+			var orders = await this._orderService.GetModifiedOrdersAsync( DateTime.Now.AddMonths( -1 ), DateTime.Now, WarehouseLocationCountryCode, CancellationToken.None );
+
+			orders.Should().NotBeEmpty();
+		}
+
+		[ Test ]
+		public async Task GetModifiedOrdersBySmallPage()
+		{
+			base.Config.OrdersPageSize = 1;
+			var orders = await this._orderService.GetModifiedOrdersAsync( DateTime.Now.AddMonths( -1 ), DateTime.Now, WarehouseLocationCountryCode, CancellationToken.None );
 
 			orders.Should().NotBeEmpty();
 		}

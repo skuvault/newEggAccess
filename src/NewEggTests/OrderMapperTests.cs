@@ -32,8 +32,7 @@ namespace NewEggTests
 				SalesTax = 20.0M,
 				OrderTotalAmount = 120.0M,
 				DiscountAmount = 10.0M,
-				ItemInfoList = new ItemInfoList() { 
-					ItemInfo = new OrderItem[]
+				ItemInfoList = new OrderItem[]
 					{
 						new OrderItem()
 						{
@@ -53,16 +52,13 @@ namespace NewEggTests
 							ExtendSalesTax = 0.1M,
 							ExtendVAT = 0.15M
 						},
-					} 
-				},
-				PackageInfoList = new PackageInfoList() { 
-					PackageInfo = new PackageInfo[] { 
+					},
+				PackageInfoList = new PackageInfo[] { 
 						new PackageInfo()
 						{
 							ShipCarrier = "UPS"
 						}
 					}
-				}
 			};
 
 			var svOrder = order.ToSVOrder();
@@ -76,7 +72,7 @@ namespace NewEggTests
 			svOrder.DiscountAmount.Should().Be( order.DiscountAmount );
 
 			svOrder.ShippingInfo.Should().NotBeNull();
-			svOrder.ShippingInfo.Carrier.Should().Be( order.PackageInfoList.PackageInfo.First().ShipCarrier );
+			svOrder.ShippingInfo.Carrier.Should().Be( order.PackageInfoList.First().ShipCarrier );
 			svOrder.ShippingInfo.ShippingCharge.Should().Be( order.ShippingAmount );
 			
 			svOrder.ShippingInfo.Address.Should().NotBeNull();
@@ -93,12 +89,12 @@ namespace NewEggTests
 			svOrder.ShippingInfo.ContactInfo.EmailAddress.Should().Be( order.CustomerEmailAddress );
 
 			svOrder.Items.Count().Should().Be( 2 );
-			svOrder.Items.First().Sku.Should().Be( order.ItemInfoList.ItemInfo.First().SellerPartNumber );
-			svOrder.Items.First().Quantity.Should().Be( order.ItemInfoList.ItemInfo.First().OrderedQty );
-			svOrder.Items.First().UnitPrice.Should().Be( order.ItemInfoList.ItemInfo.First().UnitPrice );
-			svOrder.Items.First().SalesTax.Should().Be( order.ItemInfoList.ItemInfo.First().ExtendSalesTax );
-			svOrder.Items.First().Vat.Should().Be( order.ItemInfoList.ItemInfo.First().ExtendVAT );
-			svOrder.Items.First().ShippingCharge.Should().Be( order.ItemInfoList.ItemInfo.First().ExtendShippingCharge );
+			svOrder.Items.First().Sku.Should().Be( order.ItemInfoList.First().SellerPartNumber );
+			svOrder.Items.First().Quantity.Should().Be( order.ItemInfoList.First().OrderedQty );
+			svOrder.Items.First().UnitPrice.Should().Be( order.ItemInfoList.First().UnitPrice );
+			svOrder.Items.First().SalesTax.Should().Be( order.ItemInfoList.First().ExtendSalesTax );
+			svOrder.Items.First().Vat.Should().Be( order.ItemInfoList.First().ExtendVAT );
+			svOrder.Items.First().ShippingCharge.Should().Be( order.ItemInfoList.First().ExtendShippingCharge );
 		}
 	}
 }

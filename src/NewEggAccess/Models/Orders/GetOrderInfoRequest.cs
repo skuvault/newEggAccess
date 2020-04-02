@@ -40,6 +40,7 @@ namespace NewEggAccess.Models.Orders
 	public class GetOrderInfoRequestCriteria
 	{
 		public int Type { get; set; }
+		public int Status { get; set; }
 		public string OrderDateFrom { get; set; }
 		public string OrderDateTo { get; set; }
 		public string CountryCode { get; set; }

@@ -87,13 +87,8 @@ namespace NewEggAccess.Models.Orders
 		public decimal? DutyTotal { get; set; }
 		public decimal OrderTotalAmount { get; set; }
 		public int OrderQty { get; set; }
-		public ItemInfoList ItemInfoList { get; set; }
-		public PackageInfoList PackageInfoList { get; set; }
-	}
-
-	public class ItemInfoList
-	{
-		public OrderItem[] ItemInfo { get; set; } 
+		public OrderItem[] ItemInfoList { get; set; }
+		public PackageInfo[] PackageInfoList { get; set; }
 	}
 
 	public class OrderItem
@@ -111,11 +106,6 @@ namespace NewEggAccess.Models.Orders
 		public decimal? ExtendVAT { get; set; }
 		public decimal? ExtendDuty { get; set; }
 		public string StatusDescription { get; set; }
-	}
-
-	public class PackageInfoList
-	{
-		public PackageInfo[] PackageInfo { get; set; }
 	}
 
 	public class PackageInfo
@@ -155,7 +145,7 @@ namespace NewEggAccess.Models.Orders
 						PhoneNumber = order.CustomerPhoneNumber,
 						EmailAddress = order.CustomerEmailAddress
 					},
-					Carrier = order.PackageInfoList?.PackageInfo?.FirstOrDefault()?.ShipCarrier,
+					Carrier = order.PackageInfoList?.FirstOrDefault()?.ShipCarrier,
 					ShippingCharge = order.ShippingAmount,
 				},
 				Total = order.OrderTotalAmount,
@@ -164,7 +154,7 @@ namespace NewEggAccess.Models.Orders
 			};
 
 			var items = new List< NewEggOrderItem >();
-			foreach( var orderItem in order.ItemInfoList.ItemInfo )
+			foreach( var orderItem in order.ItemInfoList )
 			{
 				items.Add( new NewEggOrderItem()
 				{

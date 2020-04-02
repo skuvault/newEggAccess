@@ -204,7 +204,7 @@ namespace NewEggAccess.Services
 				{
 					Limit = int.Parse( rateLimit ),
 					Remaining = int.Parse( rateRemaining ),
-					ResetTime = DateTime.ParseExact( rateResetTime, "M/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture )
+					ResetTime = DateTime.ParseExact( rateResetTime, "d/M/yyyy h:mm:ss tt", CultureInfo.InvariantCulture )
 				};
 			}
 
