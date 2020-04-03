@@ -36,7 +36,7 @@ namespace NewEggAccess.Services.Feeds
 			}
 
 			var request = new NewEggEnvelopeWrapper< UpdateInventoryFeedRequestBody >() { 
-				NeweggEnvelope = new NewEggEnvelope< UpdateInventoryFeedRequestBody >( "Inventory", new UpdateInventoryFeedRequestBody() { Inventory = inventory } ) 
+				NeweggEnvelope = new NewEggEnvelope< UpdateInventoryFeedRequestBody >( "Inventory", new UpdateInventoryFeedRequestBody() { Inventory = new InventoryUpdateFeed( inventory ) } ) 
 			};
 			var command = new SubmitFeedCommand( base.Config, base.Credentials, SubmitFeedRequestTypeEnum.Inventory_Data, request.ToJson() );
 

@@ -5,7 +5,19 @@ namespace NewEggAccess.Models.Feeds
 {
 	public class UpdateInventoryFeedRequestBody
 	{
-		public IEnumerable< InventoryUpdateFeedItem > Inventory { get; set; }
+		public InventoryUpdateFeed Inventory { get; set; }
+	}
+
+	public class InventoryUpdateFeed
+	{
+		public IEnumerable< InventoryUpdateFeedItem > Item { get; private set; }
+
+		public InventoryUpdateFeed( IEnumerable< InventoryUpdateFeedItem > items )
+		{
+			Condition.Requires( items, "items " ).IsNotEmpty();
+
+			this.Item = items;
+		}
 	}
 
 	public class InventoryUpdateFeedItem
