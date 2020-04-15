@@ -41,7 +41,7 @@ namespace NewEggAccess.Throttling
 		{
 			this._maxQuota = this._remainingQuota = maxQuota;
 			this._quotaRestoreTimeInSeconds = quotaRestoreTimeInSeconds;
-			this.RateLimit = new NewEggRateLimit();
+			this.RateLimit = NewEggRateLimit.Unknown;
 
 			_timer = new Timer( RestoreQuota, null, Timeout.Infinite, _quotaRestoreTimeInSeconds * 1000 );
 		}

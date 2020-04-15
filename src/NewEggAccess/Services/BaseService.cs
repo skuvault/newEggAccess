@@ -200,12 +200,7 @@ namespace NewEggAccess.Services
 				&& !string.IsNullOrWhiteSpace( rateRemaining )
 				&& !string.IsNullOrWhiteSpace( rateResetTime ) )
 			{
-				return new NewEggRateLimit()
-				{
-					Limit = int.Parse( rateLimit ),
-					Remaining = int.Parse( rateRemaining ),
-					ResetTime = DateTime.ParseExact( rateResetTime, "d/M/yyyy h:mm:ss tt", CultureInfo.InvariantCulture )
-				};
+				return new NewEggRateLimit( rateLimit, rateRemaining, rateResetTime );
 			}
 
 			return null;

@@ -84,6 +84,7 @@
     <Compile Include="OrderMapperTests.cs" />
     <Compile Include="OrderTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RateLimitTests.cs" />
     <Compile Include="TestCredentials.cs" />
   </ItemGroup>
   <ItemGroup>
