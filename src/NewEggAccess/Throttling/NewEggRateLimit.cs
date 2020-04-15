@@ -13,8 +13,8 @@ namespace NewEggAccess.Throttling
 
 		public NewEggRateLimit( string limitRaw, string remainingRaw, string resetTimeRaw )
 		{
-			this.Limit = TryParseLimit( limitRaw );
-			this.Remaining = TryParseLimit( remainingRaw );
+			this.Limit = TryParseValue( limitRaw );
+			this.Remaining = TryParseValue( remainingRaw );
 			this.ResetTime = TryParseResetTime( resetTimeRaw );
 		}
 
@@ -25,9 +25,9 @@ namespace NewEggAccess.Throttling
 			this.ResetTime = resetTime;
 		}
 
-		private int TryParseLimit( string limit )
+		private int TryParseValue( string value )
 		{
-			int.TryParse( limit, out int result );
+			int.TryParse( value, out int result );
 			return result;
 		}
 
