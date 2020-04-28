@@ -15,6 +15,8 @@ namespace NewEggAccess.Services.Items
 {
 	public class NewEggItemsService : BaseService, INewEggItemsService
 	{
+		const int SellerPartNumberRequestType = 1;
+
 		public NewEggItemsService( NewEggConfig config, NewEggCredentials credentials ) : base( credentials, config )
 		{
 		}
@@ -33,17 +35,8 @@ namespace NewEggAccess.Services.Items
 				mark = Mark.CreateNew();
 			}
 
-			if ( string.IsNullOrWhiteSpace( warehouseLocationCode ) )
-			{
-				throw new NewEggException( "Warehouse location code is not specified!" );
-			}
-
-			var request = new GetItemInventoryRequest()
-			{
-				Type = 1,
-				Value = sku,
-				WarehouseList = new WarehouseList() {  WarehouseLocation = new string[] { warehouseLocationCode } }
-			};
+			var request = new GetItemInventoryRequest( type: SellerPartNumberRequestType, value: sku,
+				warehouseLocationCode: warehouseLocationCode );
 
 			Func< HttpStatusCode, ErrorResponse, bool > ignoreErrorHandler = ( status, error ) =>
 			{
@@ -78,19 +71,8 @@ namespace NewEggAccess.Services.Items
 				mark = Mark.CreateNew();
 			}
 
-			if ( string.IsNullOrWhiteSpace( warehouseLocation ) )
-			{
-				throw new NewEggException( "Warehouse location code is not specified!" );
-			}
-
-			var request = new UpdateItemInventoryRequest()
-			{
-				Type = 1,
-				Value = sku,
-				InventoryList = new InventoryList() {  
-					Inventory = new UpdateItemInventory[] { new UpdateItemInventory() { WarehouseLocation = warehouseLocation, AvailableQuantity = quantity } }
-				}
-			};
+			var request = new UpdateItemInventoryRequest( SellerPartNumberRequestType,
+				value: sku, warehouseLocation, quantity );
 
 			Func< HttpStatusCode, ErrorResponse, bool > ignoreErrorHandler = ( status, error ) =>
 			{

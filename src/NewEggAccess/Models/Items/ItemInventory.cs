@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace NewEggAccess.Models.Items
+﻿namespace NewEggAccess.Models.Items
 {
 	public class ItemInventory
 	{
