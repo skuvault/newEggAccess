@@ -10,7 +10,7 @@ namespace NewEggAccess.Models.Items
 
 		public UpdateItemInventoryRequest( int type, string value, string warehouseLocation, int quantity )
 		{
-			Condition.Requires( value, $"sku \"{value}\"" ).IsNotNullOrWhiteSpace().IsNotLongerThan( ItemInventoryRequest.MaxSellerPartNumberLength );
+			Condition.Requires( value, $"sku {value}" ).IsNotNullOrWhiteSpace().IsNotLongerThan( ItemInventoryRequest.MaxSellerPartNumberLength );
 			Condition.Requires( warehouseLocation, "warehouseLocation" ).IsNotNullOrWhiteSpace();
 
 			this.Value = value;
