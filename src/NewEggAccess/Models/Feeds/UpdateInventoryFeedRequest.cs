@@ -1,4 +1,5 @@
 ﻿using CuttingEdge.Conditions;
+using NewEggAccess.Models.Items;
 using System.Collections.Generic;
 
 namespace NewEggAccess.Models.Feeds
@@ -28,7 +29,7 @@ namespace NewEggAccess.Models.Feeds
 
 		public InventoryUpdateFeedItem( string sellerPartNumber, string warehouseLocation, int inventory )
 		{
-			Condition.Requires( sellerPartNumber, "sellerPartNumber" ).IsNotNullOrWhiteSpace();
+			Condition.Requires( sellerPartNumber, "sku/sellerPartNumber" ).IsNotNullOrWhiteSpace().IsNotLongerThan( ItemInventoryRequest.MaxSellerPartNumberLength );
 			Condition.Requires( warehouseLocation, "warehouseLocation" ).IsNotNullOrWhiteSpace().HasLength( 3 );
 			Condition.Requires( inventory, "inventory" ).IsGreaterOrEqual( 0 );
 

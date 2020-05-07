@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using NewEggAccess.Models.Items;
 using NewEggAccess.Services.Items;
 using NUnit.Framework;
 using System;
@@ -38,6 +39,17 @@ namespace NewEggTests
 		}
 
 		[ Test ]
+		public void GetItemInventory_WhenSkuTooLong_ShouldThrow()
+		{
+			var longSku = new string( 'a', ItemInventoryRequest.MaxSellerPartNumberLength + 1 );
+				
+			Assert.ThrowsAsync< ArgumentException >( async () => 
+			{
+				await this._itemsService.GetSkuInventory( longSku, WarehouseLocationCountryCode, CancellationToken.None );
+			} );
+		}
+
+		[ Test ]
 		public async Task UpdateItemInventoryThatExists()
 		{
 			var quantity = new Random().Next( 1, 100 );
@@ -69,6 +81,18 @@ namespace NewEggTests
 			};
 
 			await this._itemsService.UpdateSkusQuantitiesAsync( inventory, WarehouseLocationCountryCode, CancellationToken.None );
+		}
+
+		[ Test ]
+		public void UpdateItemInventory_WhenSkuTooLong_ShouldThrow()
+		{
+			var quantity = new Random().Next( 1, 100 );
+			var longSku = new string( 'a', ItemInventoryRequest.MaxSellerPartNumberLength + 1 ); ;
+
+			Assert.ThrowsAsync< ArgumentException >( async () =>
+			{
+				await this._itemsService.UpdateSkuQuantityAsync( longSku, WarehouseLocationCountryCode, quantity, CancellationToken.None );
+			} );
 		}
 	}
 }
