@@ -81,6 +81,7 @@
     <Compile Include="BaseTest.cs" />
     <Compile Include="FeedsTests.cs" />
     <Compile Include="ItemTests.cs" />
+    <Compile Include="DateTimeConversionTests.cs" />
     <Compile Include="OrderMapperTests.cs" />
     <Compile Include="OrderTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
