@@ -35,9 +35,9 @@ namespace NewEggTests
 			const int Hour = 20;
 			var utcAfter8PM = new DateTime( 2020, 5, 6, Hour, 0, 1, DateTimeKind.Utc ); 
 
-			var pacificAfterNoon = Misc.ConvertFromUtcToPstStr( utcAfter8PM );
+			var pacificAfternoon = Misc.ConvertFromUtcToPstStr( utcAfter8PM );
 
-			DateTime.Parse( pacificAfterNoon ).Hour.Should().Be( Hour + pacificUtcDiffDaylightSavings );
+			DateTime.Parse( pacificAfternoon ).Hour.Should().Be( Hour + pacificUtcDiffDaylightSavings );
 		}
 
 		[ Test ]
