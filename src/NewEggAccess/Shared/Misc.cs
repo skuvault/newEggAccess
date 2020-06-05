@@ -43,7 +43,8 @@ namespace NewEggAccess.Shared
 
 		public static string ConvertFromUtcToPstStr( DateTime date )
 		{
-			return TimeZoneInfo.ConvertTimeBySystemTimeZoneId( date, "Pacific Standard Time" ).ToString( "yyyy-MM-dd hh:mm:ss" );
+			var pacificDateTime = TimeZoneInfo.ConvertTimeBySystemTimeZoneId( date, "Pacific Standard Time" );
+			return pacificDateTime.ToString( "yyyy-MM-dd HH:mm:ss" );
 		}
 
 		public static DateTime ConvertFromPstToUtc( DateTime date )
