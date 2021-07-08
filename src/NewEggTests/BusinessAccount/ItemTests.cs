@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using NewEggAccess.BusinessAccount.Models.Items;
-using NewEggAccess.BusinessAccount.Services.Items;
+using NewEggAccess.Exceptions;
 using NewEggAccess.Services.Items;
 using NUnit.Framework;
 using System;
@@ -83,6 +83,21 @@ namespace NewEggTests.BusinessAccount
 			};
 
 			await this._itemsService.UpdateSkusQuantitiesAsync( inventory, null, CancellationToken.None );
+		}
+
+		[Test]
+		public async Task UpdateItemsInventory_WhenSkuAndQuantityDuplicatedAndDoesntExist_ShouldNotThrowCT055Error()
+		{			
+			var inventory = new Dictionary< string, int >
+			{
+				{ "NotExistedSku", 1 }
+			};
+			
+			for( var i = 0; i < 6; i++ )
+			{
+				await this._itemsService.UpdateSkusQuantitiesAsync( inventory, null, CancellationToken.None );
+				await Task.Delay( 1000 );
+			}			
 		}
 
 		[Test ]

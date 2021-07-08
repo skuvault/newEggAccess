@@ -15,7 +15,7 @@ namespace NewEggTests.BusinessAccount
 	public class OrderTests : BaseTest
 	{
 		private NewEggOrdersService _orderService;
-		private DateTime _startDate = DateTime.Now.AddMonths( -2 );
+		private DateTime _startDate = DateTime.Now.AddMonths( -4 );
 		private DateTime _endDate = DateTime.Now;
 
 		[ SetUp ]

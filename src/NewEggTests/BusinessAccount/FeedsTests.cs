@@ -39,12 +39,14 @@ namespace NewEggTests.BusinessAccount
 		[ Test ]
 		public async Task UpdateItemQuantitiesThereSomeItemsAreNotExist()
 		{
+			var testSkuNotExist = "NotExistedSku";
 			var rand = new Random();
 			var inventory = new List< InventoryUpdateFeedItem> 
 			{
 				new InventoryUpdateFeedItem( TestSku1, null, rand.Next( 1, 100 ) ),
 				new InventoryUpdateFeedItem( TestSku2, null, rand.Next( 1, 100 ) ),
-				new InventoryUpdateFeedItem( new Guid().ToString(), null, rand.Next( 1, 100 ) )
+				new InventoryUpdateFeedItem( testSkuNotExist, null, 1 ),
+				new InventoryUpdateFeedItem( testSkuNotExist, null, 1 )
 			};
 
 			var feedId = await this._feedsService.UpdateItemsInventoryInBulkAsync( inventory, CancellationToken.None );
@@ -55,7 +57,7 @@ namespace NewEggTests.BusinessAccount
 		[ Test ]
 		public async Task GetFeedStatusAsync()
 		{
-			var feedId = "239JUBERAM1Q3";
+			var feedId = "26LY4588NXU3V";
 			var feedStatus = await this._feedsService.GetFeedStatusAsync( feedId, CancellationToken.None );
 
 			feedStatus.Should().NotBeNull();

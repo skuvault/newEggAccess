@@ -84,7 +84,7 @@ namespace NewEggAccess.BusinessAccount.Services.Items
 			{
 				  // can't find item
 				  return error != null
-						&& error.Code == "CT015"
+						&& ( error.Code == "CT015" || error.Code == "CT055" )
 						&& status == HttpStatusCode.BadRequest;
 			};
 
