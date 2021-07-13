@@ -86,18 +86,20 @@ namespace NewEggTests.BusinessAccount
 		}
 
 		[Test]
-		public async Task UpdateItemsInventory_WhenSkuAndQuantityDuplicatedAndDoesntExist_ShouldNotThrowCT055Error()
+		public void UpdateItemsInventory_WhenSkuAndQuantityDuplicatedAndDoesntExist_ShouldNotThrowCT055Error()
 		{			
 			var inventory = new Dictionary< string, int >
 			{
 				{ "NotExistedSku", 1 }
 			};
 			
-			for( var i = 0; i < 6; i++ )
-			{
-				await this._itemsService.UpdateSkusQuantitiesAsync( inventory, null, CancellationToken.None );
-				await Task.Delay( 1000 );
-			}			
+			Assert.DoesNotThrowAsync( async() => {
+				for (var i = 0; i < 6; i++)
+				{
+					await this._itemsService.UpdateSkusQuantitiesAsync( inventory, null, CancellationToken.None );
+					await Task.Delay( 1000 );
+				}
+			} );
 		}
 
 		[Test ]
